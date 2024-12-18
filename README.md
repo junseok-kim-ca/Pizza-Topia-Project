@@ -52,23 +52,16 @@ IGNORE 1 LINES
     pizza_ingredients,
     pizza_name
 );
-
 ```
+
 ## Data Exploration
+I begin by running a series of SQL queries to gain an initial understanding of the pizza_sales dataset, focusing on its size, uniqueness of key features, and the time range of data collection. This helps establish the foundational structure and scope of the data before further analysis.
 
 ```sql
 SELECT
     COUNT(*) AS total_rows
 FROM 
     pizza_sales; -- There are 48620 rows in this dataset
-    
-SELECT
-    COUNT(*) AS total_columns
-FROM 
-    INFORMATION_SCHEMA.COLUMNS 
-WHERE
-    TABLE_SCHEMA = 'pizza_db'
-    AND TABLE_NAME = 'pizza_sales'; -- There are 12 columns in the dataset
 
 SELECT 
     COUNT(DISTINCT pizza_name) AS unique_pizza_items
@@ -80,9 +73,78 @@ SELECT
     MAX(order_date) AS latest_order_date
 FROM 
     pizza_sales; -- The data was collected from Jan 1, 2015 until Dec 31, 2015
-
 ```
 
+## Data Cleaning 
+
+### Fixing Data Types & Text Data 
+```sql
+UPDATE pizza_sales
+SET
+    order_date = STR_TO_DATE(order_date, '%d-%m-%Y')
+WHERE
+    order_date IS NOT NULL; -- modify date format DD-MM-YYYY to YYYY-MM-DD
+
+ALTER TABLE pizza_sales
+MODIFY order_date DATE; -- change VARCHAR to DATE data type 
+
+SELECT 
+    pizza_name
+FROM 
+    pizza_sales
+WHERE
+    pizza_name REGEXP '[!@#$%^&*()_+=\\[\\]{}|;:"<>?/\\`~]'; -- Match any single character that is a punctuation symbol from the list provided.
+
+UPDATE pizza_sales
+SET
+    pizza_ingredients = REPLACE(pizza_ingredients, '?duja Salami', '''Nduja Salami')
+WHERE
+    pizza_ingredients LIKE '%?duja Salami%'; -- Update '?duja Salami' to 'Nduja Salami'
+```
+
+### Handling Missing & Duplicate data
+
+
+```sql
+SELECT 
+    * 
+FROM 
+    pizza_sales
+WHERE 
+    pizza_id IS NULL 
+    OR order_id IS NULL
+    OR pizza_name_id IS NULL
+    OR quantity IS NULL
+    OR order_date IS NULL
+    OR order_time IS NULL
+    OR unit_price IS NULL
+    OR total_price IS NULL
+    OR pizza_size IS NULL
+    OR pizza_category IS NULL
+    OR pizza_ingredients IS NULL
+    OR pizza_name IS NULL; -- There is no NULL values in all columns
+
+SELECT 
+    *,
+    COUNT(*) AS duplicate_count
+FROM 
+    pizza_sales
+GROUP BY 
+    pizza_id,
+    order_id,
+    pizza_name_id,
+    quantity,
+    order_date,
+    order_time,
+    unit_price,
+    total_price,
+    pizza_size,
+    pizza_category,
+    pizza_ingredients,
+    pizza_name
+HAVING 
+    COUNT(*) > 1; -- There are no duplicate rows 
+```
 
 
 # Analysis 
