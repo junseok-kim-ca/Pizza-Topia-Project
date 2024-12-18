@@ -76,8 +76,10 @@ FROM
 ```
 
 ## Data Cleaning 
+In this stage, I corrected data types and standardized text data to ensure more accurate analysis in the future. Additionally, I addressed missing and duplicate data to enhance overall data integrity.
 
 ### Fixing Data Types & Text Data 
+
 ```sql
 UPDATE pizza_sales
 SET
@@ -103,7 +105,6 @@ WHERE
 ```
 
 ### Handling Missing & Duplicate data
-
 
 ```sql
 SELECT 
