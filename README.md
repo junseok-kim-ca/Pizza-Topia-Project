@@ -436,14 +436,11 @@ ORDER BY
 | Sunday      | 5917        | 99203.50       |
 
 ***Key Findings***
-1. The 12 PM - 1 PM window contributes the highest revenue, highlighing the importance of catering to the lunchtime crowd
-
-2. The 5 PM - 7 PM window sees consistent revenue and order volumne, indicating a high demand during dinner hours.
-
-3. At late night, and early morning (11 PM, 9 AM, 10 AM), customers are unlikely to place orders, emphasizing  periods of low demand.
+1. Friday is the most profitable day ($136,073.90 total revenue), likely due to end-of-week celebrations, office events, or families opting for convenient meals.
+2. Sunday is the least profitable day ($99,203.50), potentially due to customers preparing for the upcoming workweek.
 
 **Insight** 
-1. Lunch and dinner times generate the highest revenue due to a high volumne of orders, indicating that Pizza Topia is well-prepared with efficient ingredient management, staffing, and operational workflows to meet customer demand effectively. 
+1. Thursday to Saturday are peak revenue days, reflecting social dining and weekend-related orders. 
 
 
 
@@ -467,6 +464,13 @@ ORDER BY
 |----------|--------------|----------------|
 | Weekday  | 35348        | 595474.15      |
 | Weekend  | 13272        | 222385.90      |
+
+***Key Findings***
+1. Weekdays contribute approximately 70% of total revenue, showing a much higher order volumn and revenue compared to weekends
+2. While lower in comparison, weekends still acount for approximately 30% of total revenue, reflecting steady demand
+
+**Insight** 
+1. Weekday sales are significantly higher, likely due to steady workday routines and larger customer segments such as office workers and students. In contrast, weekends are less busy but still present valuable opportunities for targeted promotions to capture a different customer base.
 
 
 ### 11. Monthly trend Analysis 
@@ -505,4 +509,12 @@ ORDER BY
 | Feb         | 3892         | 65159.60      |
 | Dec         | 3859         | 64701.15      |
 | Oct         | 3797         | 64027.60      |
+
+***Key Findings***
+1. July is the highest revenue month, possibly due to summer events, vacations, and increased social gatherings
+2. Although October and December align with popular holidays such as Columbus Day, Halloween, and Christmas, they are among the lowest in revenue, potentially due to competition with other seasonal dining options.
+3. Despite Valentine's Day, it recorded lower revenue ($65, 159.60), suggesting pizza might not be a top choice for this occasion. In addition, February’s shorter duration (28 or 29 days) likely contributes to fewer total orders and lower revenue compared to other months.
+
+**Insight** 
+1. Despite notable holidays in February, October, and December, total revenues are lower compared to other months. To boost sales during these periods, Pizza Topia could introduce holiday-targeted promotions, such as offering heart-shaped pizzas for Valentine's Day or themed deals for Halloween and Christmas.
 
