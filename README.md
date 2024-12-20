@@ -263,6 +263,13 @@ ORDER BY
 | Chicken        | 195920                 | 24                   |
 | Veggie         | 193690                 | 24                   |
 
+***Key Findings***
+1. Classic Pizza (27% of total revenue) is the most profitable category, indicating strong customer preference.
+2. Veggie Pizza (24% of total revenue) is the least profitable category, though the gap with Classic Pizza is not significantly large.
+
+**Insight** 
+1. Balanced Revenue Distribution: No single category completely dominates; all are within a 3% margin in terms of contribution to total revenue. 
+
 
 ### 6. Which are the top 3 best-selling pizzas, and what percentage of total revenue does each contribute?
 
@@ -276,6 +283,7 @@ WITH pizza_total_revenue AS (
 revenue_rank AS (
     SELECT
         pizza_name,
+        pizza_category,
         SUM(total_price) AS pizza_revenue,
         ROW_NUMBER() OVER (
             ORDER BY SUM(total_price) DESC
@@ -283,10 +291,12 @@ revenue_rank AS (
     FROM 
         pizza_sales
     GROUP BY 
-        pizza_name
+        pizza_name,
+        pizza_category
 )
 SELECT
     rr.pizza_name,
+    rr.pizza_category,
     ROUND(rr.pizza_revenue, 0) AS pizza_revenue,
     ROUND((rr.pizza_revenue / ptr.total_revenue * 100), 1) AS pizza_revenue_pct
 FROM 
@@ -298,20 +308,27 @@ WHERE
 ORDER BY 
     rr.pizza_revenue DESC;
 ```
+| pizza_name                 | pizza_category | pizza_revenue | pizza_revenue_pct |
+| -------------------------- | -------------- | ------------- | ----------------- |
+| The Thai Chicken Pizza     | Chicken        | 43434         | 5.3               |
+| The Barbecue Chicken Pizza | Chicken        | 42768         | 5.2               |
+| The California Chicken Pizza | Chicken      | 41410         | 5.1               |
 
-| pizza_name                  | pizza_revenue | pizza_revenue_pct |
-|-----------------------------|---------------|--------------------|
-| The Thai Chicken Pizza      | 43434         | 5.3               |
-| The Barbecue Chicken Pizza  | 42768         | 5.2               |
-| The California Chicken Pizza| 41410         | 5.1               |
 
 
+***Key Findings***
+1. The Thai Chicken Pizza (5.3% of total revenue) is the top performer, indicating that its unique flavors and ingredients strongly appeal to customers.
+2. The top 3 pizzas all belong to the Chicken category, emphasizing the strong customer preference for this segment. 
+
+**Insight** 
+1. Chicken pizzas collectively contribute a significant portion of revenue, making this a key focus area for sustaining and growing sales. 
 
 ### 7. Which pizza and size combination is ordered most frequently on weekdays compared to weekends? 
 ```sql
 WITH day_summary AS (
     SELECT
         pizza_name_id,
+        pizza_category,
         CASE
             WHEN DAYOFWEEK(order_date) IN (1, 7) THEN 'Weekend' -- Sunday (1) and Saturday (7)
             ELSE 'Weekday'
@@ -321,13 +338,15 @@ WITH day_summary AS (
         pizza_sales 
     GROUP BY 
         day_type,
-        pizza_name_id
+        pizza_name_id,
+        pizza_category
 ),
 top_pizza AS (
     SELECT
         pizza_name_id,
         day_type,
         total_order,
+        pizza_category,
         ROW_NUMBER() OVER (
             PARTITION BY day_type
             ORDER BY total_order DESC 
@@ -337,6 +356,7 @@ top_pizza AS (
 )
 SELECT
     pizza_name_id,
+    pizza_category,
     day_type,
     total_order
 FROM 
@@ -344,11 +364,17 @@ FROM
 WHERE
     row_num = 1;
 ```
-| pizza_name_id | day_type | total_order |
-|---------------|----------|-------------|
-| big_meat_s    | Weekday  | 1283        |
-| big_meat_s    | Weekend  | 528         |
+| pizza_name_id | pizza_category | day_type | total_order |
+|---------------|----------------|----------|-------------|
+| big_meat_s    | Classic        | Weekday  | 1283        |
+| big_meat_s    | Classic        | Weekend  | 528         |
 
+***Key Findings***
+1. The Big Meat Pizza (S) dominates both Weekdays and Weekends in terms of order volumn, showing its consistent popularity. 
+2. Weekday orders for this pizza (1,283) are more than double those on weekends (528). This might indicate other competing pizzas or dining preferences may be more dominant on weekends. 
+
+**Insight** 
+1. Weekday orders for this pizza (1,283) are more than twice the weekend orders (528), suggesting that other competing pizzas or shifting dining preferences may take precedence during weekends.
 
 
 ### 8. Hourly trend for total pizza sold & total_order
@@ -373,6 +399,16 @@ ORDER BY
 | 22            | 1370        | 22815.15      |
 | 23            | 68          | 1121.35       |
 | 9             | 4           | 83.00         |
+
+***Key Findings***
+1. The 12 PM - 1 PM window contributes the highest revenue, highlighing the importance of catering to the lunchtime crowd
+
+2. The 5 PM - 7 PM window sees consistent revenue and order volumne, indicating a high demand during dinner hours.
+
+3. At late night, and early morning (11 PM, 9 AM, 10 AM), customers are unlikely to place orders, emphasizing  periods of low demand.
+
+**Insight** 
+1. Lunch and dinner times generate the highest revenue due to a high volumne of orders, indicating that Pizza Topia is well-prepared with efficient ingredient management, staffing, and operational workflows to meet customer demand effectively. 
 
 
 ### 9. Day-of-week trend for total orders 
@@ -399,7 +435,15 @@ ORDER BY
 | Monday      | 6369        | 107329.55      |
 | Sunday      | 5917        | 99203.50       |
 
+***Key Findings***
+1. The 12 PM - 1 PM window contributes the highest revenue, highlighing the importance of catering to the lunchtime crowd
 
+2. The 5 PM - 7 PM window sees consistent revenue and order volumne, indicating a high demand during dinner hours.
+
+3. At late night, and early morning (11 PM, 9 AM, 10 AM), customers are unlikely to place orders, emphasizing  periods of low demand.
+
+**Insight** 
+1. Lunch and dinner times generate the highest revenue due to a high volumne of orders, indicating that Pizza Topia is well-prepared with efficient ingredient management, staffing, and operational workflows to meet customer demand effectively. 
 
 
 
