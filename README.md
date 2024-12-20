@@ -236,4 +236,229 @@ ORDER BY
 2. Pizzas like The Calabrese Pizza (9 orders), The Mediterranean Pizza (11 orders), and The Green Garden Pizza (11 orders) have fewer repeat orders.
 3. Vegetarian pizzas such as The Vegetables Pizza (44 orders) and The Green Garden Pizza (11 orders) show lower repeat rates compared to chicken-based pizzas.  
 
-### 5. 
+### 5. What is each pizza category's revenue and its percentage of total revenue?
+
+```sql
+WITH total_pizza_revenue AS (
+    SELECT
+        SUM(total_price) AS total_revenue
+    FROM 
+        pizza_sales
+)
+SELECT
+    pizza_category,
+    ROUND(SUM(total_price), 0) AS category_total_revenue,
+    ROUND(SUM(total_price) / (SELECT tpr.total_revenue FROM total_pizza_revenue tpr) * 100, 0) AS category_revenue_pct
+FROM 
+    pizza_sales
+GROUP BY 
+    pizza_category
+ORDER BY 
+    category_total_revenue DESC;
+```
+| pizza_category | category_total_revenue | category_revenue_pct |
+|----------------|-------------------------|-----------------------|
+| Classic        | 220053                 | 27                   |
+| Supreme        | 208197                 | 25                   |
+| Chicken        | 195920                 | 24                   |
+| Veggie         | 193690                 | 24                   |
+
+
+### 6. Which are the top 3 best-selling pizzas, and what percentage of total revenue does each contribute?
+
+```sql
+WITH pizza_total_revenue AS (
+    SELECT 
+        SUM(total_price) AS total_revenue
+    FROM 
+        pizza_sales
+),
+revenue_rank AS (
+    SELECT
+        pizza_name,
+        SUM(total_price) AS pizza_revenue,
+        ROW_NUMBER() OVER (
+            ORDER BY SUM(total_price) DESC
+        ) AS row_num
+    FROM 
+        pizza_sales
+    GROUP BY 
+        pizza_name
+)
+SELECT
+    rr.pizza_name,
+    ROUND(rr.pizza_revenue, 0) AS pizza_revenue,
+    ROUND((rr.pizza_revenue / ptr.total_revenue * 100), 1) AS pizza_revenue_pct
+FROM 
+    revenue_rank rr
+CROSS JOIN
+    pizza_total_revenue ptr
+WHERE
+    rr.row_num <= 3
+ORDER BY 
+    rr.pizza_revenue DESC;
+```
+
+| pizza_name                  | pizza_revenue | pizza_revenue_pct |
+|-----------------------------|---------------|--------------------|
+| The Thai Chicken Pizza      | 43434         | 5.3               |
+| The Barbecue Chicken Pizza  | 42768         | 5.2               |
+| The California Chicken Pizza| 41410         | 5.1               |
+
+
+
+### 7. Which pizza and size combination is ordered most frequently on weekdays compared to weekends? 
+```sql
+WITH day_summary AS (
+    SELECT
+        pizza_name_id,
+        CASE
+            WHEN DAYOFWEEK(order_date) IN (1, 7) THEN 'Weekend' -- Sunday (1) and Saturday (7)
+            ELSE 'Weekday'
+        END AS day_type,
+        COUNT(*) AS total_order
+    FROM
+        pizza_sales 
+    GROUP BY 
+        day_type,
+        pizza_name_id
+),
+top_pizza AS (
+    SELECT
+        pizza_name_id,
+        day_type,
+        total_order,
+        ROW_NUMBER() OVER (
+            PARTITION BY day_type
+            ORDER BY total_order DESC 
+        ) AS row_num
+    FROM 
+        day_summary
+)
+SELECT
+    pizza_name_id,
+    day_type,
+    total_order
+FROM 
+    top_pizza
+WHERE
+    row_num = 1;
+```
+| pizza_name_id | day_type | total_order |
+|---------------|----------|-------------|
+| big_meat_s    | Weekday  | 1283        |
+| big_meat_s    | Weekend  | 528         |
+
+
+
+### 8. Hourly trend for total pizza sold & total_order
+```sql
+SELECT
+    HOUR(order_time) AS hour_of_order,
+    COUNT(order_id) AS total_order,
+    SUM(total_price) AS total_revenue
+FROM 
+    pizza_sales
+GROUP BY 
+    hour_of_order
+ORDER BY 
+    total_revenue DESC;
+```
+| hour_of_order | total_order | total_revenue |
+|---------------|-------------|---------------|
+| 12            | 6543        | 111877.90     |
+| 13            | 6203        | 106065.70     |
+| 18            | 5359        | 89296.85      |
+| ...           | ...         | ...           |
+| 22            | 1370        | 22815.15      |
+| 23            | 68          | 1121.35       |
+| 9             | 4           | 83.00         |
+
+
+### 9. Day-of-week trend for total orders 
+```sql
+SELECT
+    DAYNAME(order_date) AS day_of_week,
+    COUNT(order_id) AS total_order,
+    SUM(total_price) AS total_revenue
+FROM 
+    pizza_sales
+GROUP BY 
+    day_of_week
+ORDER BY
+    total_revenue DESC;
+    -- FIELD(day_of_week, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+```
+| day_of_week | total_order | total_revenue  |
+|-------------|-------------|----------------|
+| Friday      | 8106        | 136073.90      |
+| Thursday    | 7323        | 123528.50      |
+| Saturday    | 7355        | 123182.40      |
+| Wednesday   | 6797        | 114408.40      |
+| Tuesday     | 6753        | 114133.80      |
+| Monday      | 6369        | 107329.55      |
+| Sunday      | 5917        | 99203.50       |
+
+
+
+
+
+### 10. Weekend vs Weekday Analysis
+```sql
+SELECT
+    CASE 
+        WHEN DAYOFWEEK(order_date) IN (1, 7) THEN 'Weekend'
+        ELSE 'Weekday'
+    END AS day_name,
+    COUNT(order_id) AS total_orders,
+    SUM(total_price) AS total_revenue
+FROM 
+    pizza_sales
+GROUP BY 
+    day_name
+ORDER BY 
+    total_revenue DESC;
+```
+| day_name | total_orders | total_revenue  |
+|----------|--------------|----------------|
+| Weekday  | 35348        | 595474.15      |
+| Weekend  | 13272        | 222385.90      |
+
+
+### 11. Monthly trend Analysis 
+```sql
+SELECT
+    CASE
+        WHEN MONTH(order_date) = 1 THEN 'Jan'
+        WHEN MONTH(order_date) = 2 THEN 'Feb'
+        WHEN MONTH(order_date) = 3 THEN 'Mar'
+        WHEN MONTH(order_date) = 4 THEN 'Apr'
+        WHEN MONTH(order_date) = 5 THEN 'May'
+        WHEN MONTH(order_date) = 6 THEN 'Jun'
+        WHEN MONTH(order_date) = 7 THEN 'Jul'
+        WHEN MONTH(order_date) = 8 THEN 'Aug'
+        WHEN MONTH(order_date) = 9 THEN 'Sep'
+        WHEN MONTH(order_date) = 10 THEN 'Oct'
+        WHEN MONTH(order_date) = 11 THEN 'Nov'
+        WHEN MONTH(order_date) = 12 THEN 'Dec'
+    END AS order_month,
+    COUNT(order_id) AS total_orders,
+    SUM(total_price) AS total_revenue
+FROM 
+    pizza_sales
+GROUP BY 
+    order_month
+ORDER BY 
+    total_revenue DESC;
+    -- FIELD(order_month, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+```
+| order_month | total_orders | total_revenue |
+|-------------|--------------|---------------|
+| Jul         | 4301         | 72557.90      |
+| May         | 4239         | 71402.75      |
+| Mar         | 4186         | 70397.10      |
+| ...         | ...          | ...           |
+| Feb         | 3892         | 65159.60      |
+| Dec         | 3859         | 64701.15      |
+| Oct         | 3797         | 64027.60      |
+
