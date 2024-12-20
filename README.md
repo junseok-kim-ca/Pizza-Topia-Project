@@ -154,29 +154,86 @@ For this project, each query was designed to explore specific requirements of Pi
 ### 1. Total Revenue from pizza sales
 To measure the financial performance of the pizza business, I calculated the total revenue by summing up the sales figures across all orders. This query is essential for understanding the overall income generated, providing a baseline for evaluating business success.
 
-*** 왜 total revenue를 했는지 이해해보자 *** 
-
 ```sql
 SELECT
-	ROUND(SUM(total_price), 0) AS total_revenue
+    ROUND(SUM(total_price), 0) AS total_revenue
 FROM 
-	pizza_sales;
+    pizza_sales;
 ```
 | total_revenue |
 |---------------|
 | 817860        |
+
+
 
 ### 2. Average order value (AOV) of Pizza Topia
 To assess customer spending patterns, I calculated the average order value by dividing the total revenue by the number of unique orders. This query calculates the average revenue per order, offering insights into customer spending habits. 
 
 ```sql
 SELECT
-	ROUND(SUM(total_price) / COUNT(DISTINCT order_id), 2) AS avg_order_value
+    ROUND(SUM(total_price) / COUNT(DISTINCT order_id), 2) AS avg_order_value
 FROM 
-	pizza_sales;
+    pizza_sales;
 ```
 | avg_order_value  |        
 |------------------|
 | 38.31  |  
 
+### 3. Average pizzas per order from Pizza Topia
+To understand customer purchasing habits, this query calculates the average number of pizzas per order by dividing total pizzas sold by unique orders, revealing typical order sizes.
 
+```sql
+SELECT
+    ROUND(SUM(quantity) / COUNT(DISTINCT order_id), 0) AS avg_pizza_per_order
+FROM 
+    pizza_sales; -- 2
+
+```
+| avg_pizza_per_order  |        
+|------------------|
+| 2 |  
+
+### 4. Repeat orders by each pizzas (ordered by highest to lowest) 
+I calculated the number of unique repeat orders for each pizza in order to identify customer loyalty and preferences. This query highlightes the most frequently reordered pizzas. 
+
+```sql
+WITH repeat_orders AS (
+    SELECT
+        pizza_name,
+        order_id,
+        COUNT(order_id) AS total_order
+    FROM 
+        pizza_sales
+    GROUP BY 
+        pizza_name,
+        order_id
+    HAVING 
+        COUNT(order_id) > 1 
+)
+SELECT
+    pizza_name,
+    COUNT(DISTINCT order_id) AS total_repeat_order -- Use the DISTINCT operator to ensure the count is accurate and to prevent duplicate entries from inflating the results
+FROM 
+    repeat_orders
+GROUP BY 
+    pizza_name
+ORDER BY
+    total_repeat_order DESC;
+
+```
+| Pizza Name                       | Pizza Category | Total Repeat Orders |
+|----------------------------------|----------------|---------------------|
+| The California Chicken Pizza     | Chicken        | 102                 |
+| The Barbecue Chicken Pizza       | Chicken        | 98                  |
+| The Pepperoni Pizza              | Classic        | 89                  |
+| ...                              | ...            | ...                 |
+| The Green Garden Pizza           | Veggie         | 11                  |
+| The Mediterranean Pizza          | Veggie         | 11                  |
+| The Calabrese Pizza              | Supreme        | 9                   |
+
+***Key Findings***
+1. The California Chicken Pizza leads significantly with 102 repeat orders, making it the most popular pizza among returning customers.
+2. Pizzas like The Calabrese Pizza (9 orders), The Mediterranean Pizza (11 orders), and The Green Garden Pizza (11 orders) have fewer repeat orders.
+3. Vegetarian pizzas such as The Vegetables Pizza (44 orders) and The Green Garden Pizza (11 orders) show lower repeat rates compared to chicken-based pizzas.  
+
+### 5. 
