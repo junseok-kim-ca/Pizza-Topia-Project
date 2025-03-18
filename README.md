@@ -1,5 +1,5 @@
 # Overview 
-Welcome to my analysis of Pizza Topia's sales data, aimed at uncovering trends, customer preferences, and revenue opportunities. This project analyzes over 48,000 rows of transactional data using MySQL and MySQL Workbench to address key business questions.
+Welcome to my analysis of Pizza Topia's (fictional company) sales data, aimed at uncovering trends, customer preferences, and revenue opportunities. This project analyzes over 48,000 rows of transactional data using MySQL and MySQL Workbench to address key business questions.
 
 By exploring metrics such as revenue trends, order volumes, and customer behavior patterns, the analysis reveals insights like top-selling pizzas, revenue contributions by category, peak sales times, repeat orders, and average order sizes.
 
