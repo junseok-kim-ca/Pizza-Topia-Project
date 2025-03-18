@@ -3,7 +3,7 @@ Welcome to my analysis of Pizza Topia's (fictional company) sales data, aimed at
 
 By exploring metrics such as revenue trends, order volumes, and customer behavior patterns, the analysis reveals insights like top-selling pizzas, revenue contributions by category, peak sales times, repeat orders, and average order sizes.
 
-🔍 If you want to see full SQL queries, check them out here: https://github.com/junseok-kim-ca/Pizza-Topia-Project/blob/main/1_Pizza_Topia_SQL_Project.sql
+🔍 If you want to see full SQL queries, check them out here: [Pizza-Topia-Project](1_Pizza_Topia_SQL_Project.sql)
 
 # Questions: 
 1. What is the total revenue generated from all pizza sales?
