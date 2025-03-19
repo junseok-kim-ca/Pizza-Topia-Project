@@ -5,7 +5,7 @@ By exploring metrics such as revenue trends, order volumes, and customer behavio
 
 🔍 Want to view the complete SQL queries? Check them out here: [Pizza Topia SQL Project](1_Pizza_Topia_SQL_Project.sql)
 
-# Questions: 
+# Questions To Analyze: 
 1. What is the total revenue generated from all pizza sales?
 2. What is the average value of each order based on total pizza sales?
 3. On average, how many pizzas are included in each order?
