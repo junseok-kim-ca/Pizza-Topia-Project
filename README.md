@@ -569,12 +569,13 @@ This project provided several general insights into Pizza Topia:
 Throughout this project, I significantly enhanced my SQL skills and developed a deeper understanding of data analysis for business insights. Here's how:
 
 1. **Complex Query Crafting**:
-Mastered the use of `CTEs (Common Table Expressions)` to simplify complex queries and break down analytical challenges into manageable steps. This allowed for cleaner, more modular query writing. Additionally, I gained proficiency in using window functions like `ROW_NUMBER()` to rank and filter data within partitions, enabling advanced insights such as identifying top-selling pizzas by category and determining the most popular items for weekdays versus weekends.
+Mastered the use of `CTEs (Common Table Expressions)` to simplify complex queries and break down analytical challenges into manageable steps. This allowed for cleaner, more modular query writing.
+Additionally, I gained proficiency in using window functions like `ROW_NUMBER()` to rank and filter data within partitions, enabling advanced insights such as identifying top-selling pizzas by category and determining the most popular items for weekdays versus weekends.
 
-2. **Data Aggregation**:
+3. **Data Aggregation**:
 Refined my ability to use `GROUP BY` and aggregate functions like `SUM(), AVG(), COUNT()`, and `ROW_NUMBER()` to extract meaningful insights, such as identifying top-selling pizzas, peak sales periods, and revenue contributions by category.
 
-3. **Business Insight Generation**:
+4. **Business Insight Generation**:
 Converted raw data into actionable insights by crafting SQL queries that addressed real-world business questions, such as identifying customer preferences, high-performing products, and sales patterns.
 
 
